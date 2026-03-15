@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, MouseEvent } from "react";
+import React, { useState, MouseEvent } from "react";
+import Link from "next/link";
 import { useTheme } from "../context/ThemeContext";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -14,11 +15,7 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { darkMode, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false); // ✅ track client mount
 
-  useEffect(() => {
-    setMounted(true); // now we know we're on the client
-  }, []);
 
   const navLinks: NavLink[] = [
     { name: "Home", id: "home" },
@@ -36,8 +33,6 @@ const Navbar: React.FC = () => {
     if (element) element.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Don't render theme-dependent content until mounted
-  if (!mounted) return null;
 
   return (
     <nav
@@ -48,15 +43,16 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* LOGO */}
-          <div className="shrink-0 flex items-center cursor-pointer">
+          <Link href="/" className="shrink-0 flex items-center cursor-pointer">
             <Image
               className={`${darkMode ? "filter brightness-0 invert" : ""}`}
               src="/logo.png"
               alt="Mr. Fix and Build Logo"
               width={70}
               height={40}
+              priority
             />
-          </div>
+          </Link>
 
           {/* DESKTOP MENU */}
           <div className="hidden md:flex items-center space-x-8">
@@ -79,8 +75,8 @@ const Navbar: React.FC = () => {
                 darkMode ? "bg-[#3A3A3C]" : "bg-gray-300"
               }`}
             >
-              <div className="absolute left-1.5 text-xs text-yellow-500">☀️</div>
-              <div className="absolute right-1.5 text-xs text-white">🌙</div>
+              <div className="absolute left-1.5 text-[10px] text-yellow-500">L</div>
+              <div className="absolute right-1.5 text-[10px] text-white">D</div>
               <div
                 className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 z-10 ${
                   darkMode ? "translate-x-7" : "translate-x-0"
@@ -91,7 +87,9 @@ const Navbar: React.FC = () => {
             {/* CTA BUTTON */}
             <a
               href="/#contact"
-              onClick={e => handleScroll(e, "contact")}
+                onClick={e => {
+                  if (pathname === "/") handleScroll(e, "contact");
+                }}
               className="bg-[#C8102E] hover:bg-[#a00d25] text-white px-6 py-2 rounded-sm uppercase font-bold text-sm tracking-wide transition-all transform hover:scale-105 shadow-md"
             >
               Contact Us
@@ -146,19 +144,26 @@ const Navbar: React.FC = () => {
           } border-b transition-colors duration-300`}
         >
           <span className="text-[#C8102E] font-bold text-2xl tracking-tighter uppercase">
-            Build<span className="text-black dark:text-white transition-colors duration-300">Co.</span>
+            Mr. Fix{" "}
+            <span className="text-black dark:text-white transition-colors duration-300">Build</span>
           </span>
-          <span onClick={toggleMenu} className={`${darkMode ? "text-white" : "text-gray-800"} ml-2 font-semibold text-m`}>
+          <button
+            onClick={toggleMenu}
+            className={`${darkMode ? "text-white" : "text-gray-800"} ml-2 font-semibold text-m`}
+            aria-label="Close menu"
+          >
             X
-          </span>
+          </button>
         </div>
 
         <div className="flex flex-col px-6 py-8 space-y-6">
           {navLinks.map(link => (
             <a
               key={link.id}
-              href={`#${link.id}`}
-              onClick={e => handleScroll(e, link.id)}
+              href={`/#${link.id}`}
+                onClick={e => {
+                  if (pathname === "/") handleScroll(e, link.id);
+                }}
               className={`text-lg uppercase font-semibold tracking-wide transition-colors ${
                 darkMode ? "text-[#BFC0C0] hover:text-white" : "text-gray-700 hover:text-[#C8102E]"
               }`}
@@ -169,8 +174,10 @@ const Navbar: React.FC = () => {
 
           <div className={`pt-6 border-t ${darkMode ? "border-[#505052]" : "border-gray-300"}`}>
             <a
-              href="#contact"
-              onClick={e => handleScroll(e, "contact")}
+              href="/#contact"
+                onClick={e => {
+                  if (pathname === "/") handleScroll(e, "contact");
+                }}
               className="block w-full text-center bg-[#C8102E] px-6 py-3 rounded-sm uppercase font-bold tracking-wide shadow-md"
             >
               Contact Us
@@ -186,3 +193,6 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
+
+
+

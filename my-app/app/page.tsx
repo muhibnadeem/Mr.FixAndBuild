@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
-import { useTheme } from "./context/ThemeContext"; 
-import { projects } from "@/app/data/projects";
+import { useTheme } from "./context/ThemeContext";
+import { getProjectSlug, projects } from "@/app/data/projects";
 import { motion, Variants } from "framer-motion"; // Added 'Variants' import
 import { 
   Hammer, 
@@ -39,16 +38,8 @@ const staggerContainer: Variants = {
 
 const HomePage = () => {
   const { darkMode } = useTheme(); 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true); // ensures client-side render only
-  }, []);
-
-  if (!mounted) return null; // avoid hydration mismatch
-
-
-  const whatsappNumber = "+447343025270"; 
-  const whatsappLink = `https://wa.me/${447343025270}?text=Hello%20Mr.%20Fix%20and%20Build,%20I%20need%20a%20quote.`;
+  const whatsappNumber = "447343025270";
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=Hello%20Mr.%20Fix%20and%20Build,%20I%20need%20a%20quote.`;
 
   const services = [
     {
@@ -81,7 +72,7 @@ const HomePage = () => {
     }`}>
       
       {/* ----------------HERO SECTION---------------- */}
-      <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section id="home" className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0 z-0">
           <img 
@@ -90,7 +81,7 @@ const HomePage = () => {
             className="w-full h-full object-cover"
           />
           {/* Gradient Overlay for Text Readability */}
-          <div className={`absolute inset-0 bg-linear-to-b ${
+          <div className={`absolute inset-0 bg-gradient-to-b ${
             darkMode ? "from-black/90 via-black/70 to-[#121212]" : "from-black/80 via-black/50 to-white"
           }`} />
         </div>
@@ -102,11 +93,15 @@ const HomePage = () => {
             variants={staggerContainer}
           >
             <motion.h2 variants={fadeInUp} className="text-[#C8102E] font-bold tracking-widest uppercase mb-4 text-sm md:text-lg">
-              Reliable • Professional • Skilled
+              Reliable * Professional * Skilled
             </motion.h2>
-            <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
+            <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 hero-glow">
               MR. FIX AND <span className="text-[#C8102E]">BUILD</span>
             </motion.h1>
+            <motion.div
+              variants={fadeInUp}
+              className="mx-auto mb-8 h-1.5 w-48 md:w-64 rounded-full bg-gradient-to-r from-transparent via-[#C8102E] to-transparent construction-sweep"
+            />
             <motion.p variants={fadeInUp} className="text-gray-200 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed shadow-black drop-shadow-md">
               Your trusted partner for home improvements and repairs. 
               We bring industrial-grade quality to your residential projects.
@@ -188,7 +183,7 @@ const HomePage = () => {
                 Recent Projects
               </h2>
             </div>
-            <a href="#" className="hidden md:flex items-center gap-2 text-[#C8102E] font-bold uppercase tracking-wide hover:underline mt-4 md:mt-0">
+            <a href="/#projects" className="hidden md:flex items-center gap-2 text-[#C8102E] font-bold uppercase tracking-wide hover:underline mt-4 md:mt-0">
               View All Work <ArrowRight className="w-4 h-4" />
             </a>
           </div>
@@ -201,11 +196,10 @@ const HomePage = () => {
             variants={staggerContainer}
           >
             {projects.map((project, index) => {
-              const slug = project.title.toLowerCase().replace(/\s+/g, "-");
               return (
                 <Link
                   key={index}
-                  href={`/projects/${slug}`}
+                  href={`/projects/${getProjectSlug(project)}`}
                   className="group relative overflow-hidden rounded-sm shadow-xl block"
                 >
                   <motion.div 
@@ -213,7 +207,7 @@ const HomePage = () => {
                     className="relative overflow-hidden rounded-sm"
                   >
                 {/* Image */}
-                <div className="aspect-4/5 md:aspect-3/4 overflow-hidden">
+                <div className="aspect-[4/5] md:aspect-[3/4] overflow-hidden">
                   <img 
                     src={project.image} 
                     alt={project.title} 
@@ -222,7 +216,7 @@ const HomePage = () => {
                 </div>
                 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
                   <span className="text-[#C8102E] font-bold text-xs uppercase tracking-widest mb-2">
                     {project.category}
                   </span>
@@ -240,7 +234,7 @@ const HomePage = () => {
           </motion.div>
 
           <div className="mt-12 text-center md:hidden">
-             <a href="#" className="inline-flex items-center gap-2 text-[#C8102E] font-bold uppercase tracking-wide hover:underline">
+            <a href="/#projects" className="inline-flex items-center gap-2 text-[#C8102E] font-bold uppercase tracking-wide hover:underline">
               View All Work <ArrowRight className="w-4 h-4" />
             </a>
           </div>
@@ -288,7 +282,7 @@ const HomePage = () => {
                 Building Trust, <br /> One Project at a Time.
               </h2>
               <p className={`text-lg mb-6 leading-relaxed ${darkMode ? "text-[#BFC0C0]" : "text-gray-600"}`}>
-                At <strong>Mr. Fix and Build</strong>, we understand that your home is your most valuable asset. That's why we approach every job—whether it's fixing a loose hinge or renovating a kitchen—with the same level of industrial precision and care.
+                At <strong>Mr. Fix and Build</strong>, we understand that your home is your most valuable asset. That's why we approach every job -- whether it's fixing a loose hinge or renovating a kitchen -- with the same level of industrial precision and care.
               </p>
               
               <div className="space-y-4 mb-8">
@@ -305,7 +299,7 @@ const HomePage = () => {
                 ))}
               </div>
 
-              <a href="team" className="text-[#C8102E] font-bold uppercase tracking-wide hover:text-[#a00d25] inline-flex items-center gap-2 group">
+              <a href="/team" className="text-[#C8102E] font-bold uppercase tracking-wide hover:text-[#a00d25] inline-flex items-center gap-2 group">
                 Meet The Team <ArrowRight className="group-hover:translate-x-1 transition-transform" />
               </a>
             </motion.div>

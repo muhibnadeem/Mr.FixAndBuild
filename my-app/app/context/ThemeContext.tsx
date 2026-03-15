@@ -10,16 +10,7 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("theme");
-      if (saved) return saved === "dark";
-
-      // DEFAULT TO LIGHT MODE
-      return false;
-    }
-    return false;
-  });
+  const [darkMode, setDarkMode] = useState<boolean>(false);
 
   const toggleTheme = () => {
     setDarkMode(prev => {
@@ -30,6 +21,17 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       return newMode;
     });
   };
+
+  // Initialize from storage or system preference on mount.
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved) {
+      setDarkMode(saved === "dark");
+      return;
+    }
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    if (prefersDark) setDarkMode(true);
+  }, []);
 
   // Add/remove 'dark' class on <html>
   useEffect(() => {
