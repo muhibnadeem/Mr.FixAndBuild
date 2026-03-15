@@ -1,4 +1,3 @@
-import React from 'react';
 import Image from "next/image";
 import { Facebook, Instagram, Mail, MessageCircle } from "lucide-react";
 
@@ -36,7 +35,7 @@ const Footer: React.FC = () => {
 
   {/* WhatsApp */}
   <a
-    href="https://wa.me/+447343025270"  // <-- add your number here
+    href="https://wa.me/447343025270"
     target="_blank"
     rel="noopener noreferrer"
     className="bg-black p-3 rounded-sm hover:bg-[#C8102E] text-white transition-colors duration-300"
@@ -71,10 +70,15 @@ const Footer: React.FC = () => {
               Company
             </h3>
             <ul className="space-y-2 text-sm font-medium">
-              {['Home', 'About Us', 'Services', 'Projects'].map((item) => (
-                <li key={item}>
-                  <a href={`/#${item.toLowerCase().replace(' ', '')}`} className="hover:text-white hover:underline decoration-[#C8102E] decoration-2 underline-offset-4 transition-all">
-                    {item}
+              {[
+                { label: "Home", id: "home" },
+                { label: "About Us", id: "about" },
+                { label: "Services", id: "services" },
+                { label: "Projects", id: "projects" },
+              ].map((item) => (
+                <li key={item.id}>
+                  <a href={`/#${item.id}`} className="hover:text-white hover:underline decoration-[#C8102E] decoration-2 underline-offset-4 transition-all">
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -139,7 +143,7 @@ const Footer: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-xs uppercase tracking-widest text-[#BFC0C0]">
           
           <div className="mb-4 md:mb-0">
-            &copy; {currentYear} BuildCo. Construction Inc. All Rights Reserved.
+            &copy; {currentYear} Mr. Fix and Build. All Rights Reserved.
           </div>
 
           <div className="flex space-x-6">
